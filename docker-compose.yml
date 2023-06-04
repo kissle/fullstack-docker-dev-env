@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    # command: sleep infinity
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./backend:/app/backend
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    environment:
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - DJANGO_SETTINGS_MODULE=backend.settings
+      - DJANGO_SECRET_KEY=qk+@1k#vn(xpbxs&7k&*k!yabr(yz3ua$uyh(%t*&j8r675^h#
+      - DJANGO_DEBUG=True
+      - DJANGO_CORS_ORIGIN_WHITELIST=http://localhost:4200
+      - DJANGO_CORS_ORIGIN_ALLOW_ALL=True
+      - DJANGO_ADMIN_URL=admin/
+      - DJANGO_ADMINS=Admin
+      - DJANGO_EMAIL_HOST=smtp.gmail.com
+      - DJANGO_EMAIL_PORT=587
+
+  db:
+    image: postgres:12.0-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - 5432:5432
+
+  # frontend:
+  #   build: ../frontend
+  #   command: sleep infinity
+  #   volumes:
+  #     - ../frontend:/app/frontend
+  #   ports:
+  #     - 4200:4200
+  #   depends_on:
+  #     - backend
+  #   environment:
+      # - REACT_APP_API_URL=http://localhost:8000/api
+      # - REACT_APP_ADMIN_URL=http://localhost:8000/admin
+
+volumes:
+  postgres_data:
